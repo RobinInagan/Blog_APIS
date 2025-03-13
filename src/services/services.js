@@ -1,28 +1,40 @@
 import axios from "axios";
 
-const newsUrl = ''
+const newsUrl = 'https://newsapi.org/v2/everything'
 const usersUrl = 'https://randomuser.me/api/'
 
 export default class Services{
-
-    getNews = async() => {
-        await axios.get(newsUrl)
-        .then(data =>{
-            return data
-        })
+    getNews = async (page) => {
+        try {
+            const response = await axios.get(newsUrl, {
+                params: {
+                    apiKey: '1807eec0c02b4922bf30882aca31faca',
+                    pageSize:10,
+                    page,
+                    q: 'technology'
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error al obtener noticias:', error);
+            throw error; 
+        }
     }
-    
-    getUsers = async(page) => {
-        await axios.get(usersUrl,{
-            params:{
-                inc:'gender,name,nat,picture',
-                page,
-                results : 10,
-                seed:'be724bfd4181df4c'
-            }
-        })
-        .then(data =>{
-            return data
-        })
+
+    getUsers = async (page) => {
+        try {
+            const response = await axios.get(usersUrl, {
+                params: {
+                    inc: 'gender,name,nat,picture',
+                    page,
+                    results: 10,
+                    seed: 'be724bfd4181df4c'
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error al obtener usuarios:', error);
+            throw error;
+        }
     }
 }

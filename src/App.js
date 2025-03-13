@@ -1,16 +1,13 @@
-import services from './services/services.js'
-import { useState,useEffect } from 'react';
-const getServices = new services()
+import Navbar from "./components/navbar";
+import NewsContainer from './components/contenedornoticias'
+
 
 function App() {
-  
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Hola Mundo
-        </p>
-      </header>
+    <div>
+      <Navbar/>
+      <h1 className="text-center my-4">Blog de Noticias</h1>
+      <NewsContainer/>
     </div>
   );
 }
