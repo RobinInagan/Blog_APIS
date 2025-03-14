@@ -8,7 +8,7 @@ export default class Services{
         try {
             const response = await axios.get(newsUrl, {
                 params: {
-                    apiKey: '1807eec0c02b4922bf30882aca31faca',
+                    apiKey: process.env.REACT_APP_API_KEY,
                     pageSize:10,
                     page,
                     q: 'technology'
