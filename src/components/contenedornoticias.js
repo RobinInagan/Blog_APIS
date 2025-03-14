@@ -5,39 +5,46 @@ import Pagination from './pagination';
 
 const NewsContainer = () => {
   const [articles, setArticles] = useState([]);
+  const [loadedPages, setLoadedPages] = useState({});
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const services = new Services();
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      try {
-        // Solicita noticias y usuarios por página
-        const [newsData, usersData] = await Promise.all([
-          services.getNews(currentPage),
-          services.getUsers(currentPage)
-        ]);
-
-        // Asignar autores a las noticias
-        const updatedArticles = newsData.articles.map((article, index) => ({
-          ...article,
-          author: `${usersData.results[index % usersData.results.length].name.first} ${usersData.results[index % usersData.results.length].name.last}`
-        }));
-
-        setArticles(updatedArticles);
-      } catch (error) {
-        console.error('Error al cargar datos:', error);
-      } finally {
+      if (loadedPages[currentPage]) {
+        setArticles(loadedPages[currentPage]);
         setLoading(false);
+      } else {
+        setLoading(true);
+        try {
+          const [newsData, usersData] = await Promise.all([
+            services.getNews(currentPage),
+            services.getUsers(currentPage)
+          ]);
+          const updatedArticles = newsData.articles.map((article, index) => ({
+            ...article,
+            author: `${usersData.results[index % usersData.results.length].name.first} ${usersData.results[index % usersData.results.length].name.last}`
+          }));
+          setLoadedPages((prevPages) => ({
+            ...prevPages,
+            [currentPage]: updatedArticles
+          }));
+
+          setArticles(updatedArticles);
+        } catch (error) {
+          console.error('Error al cargar datos:', error);
+        } finally {
+          setLoading(false);
+        }
       }
     };
 
     fetchData();
-  }, [currentPage]); // Actualiza datos al cambiar de página
+  }, [currentPage, loadedPages]);
 
   const handlePageChange = (page) => {
-    setCurrentPage(page); // Cambia la página actual
+    setCurrentPage(page);
   };
 
   if (loading) {
